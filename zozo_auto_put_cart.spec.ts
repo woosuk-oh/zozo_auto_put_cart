@@ -2,32 +2,12 @@ import {test, expect, webkit, firefox, devices, chromium, BrowserContext,} from 
 export const ssid = 87249451;
 export const rid = 3203;
 
-export function getIds() {
-    return { ssid, rid }
+export function getZozotownCartUrl(){
+    return 'https://zozo.jp/_cart/default.html?at=1'
 }
-
 export function getZozotownHostUrl(){
-    // return 'https://zozo.jp'
-    return 'https://zozo.jp/sp/_member/login.html'
-    // return 'https://google.com'
+    return 'https://zozo.jp'
 }
-export function getZozotownUrl(){
-    return 'https://zozo.jp/sp/_cart/default.html'
-}
-
-export function getInitPageUrl() {
-    return 'http://localhost:63342/coin/zozo_test.html?_ijt=dp2sn7138vn5ll9jm95bbuv0qc&_ij_reload=RELOAD_ON_SAVE'
-}
-export function fetchPutCart() { //test ssid, rid
-    // const ssid = document.getElementById('ssid').value;
-    // const rid = document.getElementById('rid').value;
-
-
-
-    const ssid = getIds().ssid;
-    const rid = getIds().rid;
-}
-
 
 test.describe('zozo town auto put cart', () => {
     let apiContext;
@@ -35,54 +15,7 @@ test.describe('zozo town auto put cart', () => {
     const android = devices['Galaxy S9+'];
 
 
-
-    // test('move to init page', async ({page}) => {
-    //     await page.goto(getInitPageUrl());
-    // })
-
-
-    /*test.beforeAll(async ({ playwright }) => {
-        /!*apiContext = await playwright.request.newContext({
-            // All requests we send go to this API endpoint.
-            baseURL: getZozotownUrl(),
-            extraHTTPHeaders: {
-                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*!/!*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-                "cache-control": "no-cache",
-                "content-type": "application/x-www-form-urlencoded",
-                "pragma": "no-cache",
-                "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
-                "sec-ch-ua-mobile": "?1",
-                "sec-ch-ua-platform": "\"Android\"",
-                "sec-fetch-dest": "document",
-                "sec-fetch-mode": "navigate",
-                "sec-fetch-site": "same-origin",
-                "sec-fetch-user": "?1",
-                "upgrade-insecure-requests": "1",
-            },
-        });*!/
-
-        apiContext = await playwright.request.newContext({
-            // All requests we send go to this API endpoint.
-            baseURL: 'https://api.github.com',
-            extraHTTPHeaders: {
-                // We set this header per GitHub guidelines.
-                'Accept': 'application/vnd.github.v3+json',
-                // Add authorization token to all requests.
-                // Assuming personal access token available in the environment.
-                'Authorization': `token ${process.env.API_TOKEN}`,
-            },
-        });
-    })
-
-    test.afterAll(async ({ }) => {
-        // Dispose all responses.
-        await apiContext.dispose();
-    });*/
-
     test('move to zozo town mobile page', async (/*{page}*/) => {
-        let testVal = 'test';
-
         const browser = await firefox.launch({
             headless: false,
             // ...android
@@ -90,85 +23,17 @@ test.describe('zozo town auto put cart', () => {
         });
 
         // const browser = await chromium.launch();
-      /*  const browserContext = await browser.newContext({
+     /*   const browserContext = await browser.newContext({
             ...android
             // ...iPhone
         });*/
-        const page = await browser.newPage();
-        // const page = await browserContext.newPage();
 
-
-
-        // Using the browser fixture, you can get access to the BrowserContext
-
-        // Add cookies to the browserContext
-        // await page.goto(getZozotownHostUrl());
-
-
-        // await page.goto('hhttps://zozo.jp/_member/login.html?bkurl=%2F%3F');
-        // await page.locator('#input-zozoid').fill('gta2v@naver.com');
-        // await page.locator('#input-password').fill('wjsemd90');
-        // await page.locator('input[type="submit"]').click();
-        // await page.waitForTimeout(10000);
-
-        // await page.goto('https://zozo.jp/shop/nike/goods/54382162/?did=90051147&rid=1003');
-        /*await page.evaluate(async () => {
-            /!*await fetch("https://zozo.jp/sp/_member/login.html", {
-                "headers": {
-                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*!/!*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-                    "cache-control": "max-age=0",
-                    "content-type": "application/x-www-form-urlencoded",
-                    "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
-                    "sec-ch-ua-mobile": "?1",
-                    "sec-ch-ua-platform": "\"Android\"",
-                    "sec-fetch-dest": "document",
-                    "sec-fetch-mode": "navigate",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-user": "?1",
-                    "upgrade-insecure-requests": "1"
-                },
-                "referrer": "https://zozo.jp/sp/_member/login.html?p_id=1&bkurl=https%3A%2F%2Fzozo.jp%2Fsp%2F",
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": "c=Login&memid=gta2v%40naver.com&mempw=wjsemd90&autologin=1&pattern=",
-                "method": "POST",
-                "mode": "cors",
-                "credentials": "include"
-            });
-            await page.goto('https://zozo.jp/sp/shop/nike/goods/54382162/?did=90051147&rid=3004');*!/
-        });*/
-
-        // await page.goto('https://zozo.jp/sp/shop/nike/goods/59531385/?did=100310821&rid=3203');
-        await page.goto('https://zozo.jp/_cart/default.html?at=1');
-
-
-        // await page.locator('text=スニーカー').nth(0).click();
-       /* await expect(
-            page.locator(`.imgCompleat img >> nth=0`)
-        ).toHaveAttribute('alt', /カートに入れる/);*/
-
-        // const alt = await page.getAttribute('img', 'alt');
-        // expect(alt).toBe('スニーカー');
-
-
-
-        // await page.locator('img[alt*="スニーカー"]').nth(0).click();
-        // await page.setViewportSize({ width: 800, height: 1200 });
-
-        // await expect(page.locator('button[data-karte-tracking="goodscartputclick"]')).toBeVisible();
-
-        // await page.waitForTimeout(20000);
-        // await page.locator('button[data-karte-tracking="goodscartputclick"]').click();
-        // await page.locator('button:has-text("カートに追加")').nth(0).click();
-
+        const browserContext = await browser.newContext();
+        const page = await browserContext.newPage();
+        await page.goto(getZozotownCartUrl());
         await page.waitForTimeout(6000);
-        // await page.locator('.c-button.--appearance-primary.--width-fluid.--height-medium').nth(1).click();
-        // await page.waitForTimeout(5000);
         await page.evaluate(async ()=> {
-            console.log('window?.__seckey', window?.__seckey)
-            // let secKey = window?.__seckey;
-
-            // console.log('secKey: ', secKey);
+            // console.log('window?.__seckey', window?.__seckey)
                 await fetch("https://zozo.jp/_cart/default.html", {
                     "headers": {
                         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -195,91 +60,10 @@ test.describe('zozo town auto put cart', () => {
                 // console.log('result', result.json());
             });
         });
-
-
-/*        await Promise.all([
-            page.waitForResponse(res =>
-            res.status() === 200
-            ),
-
-        ])*/
-
-        // await page.click('text=カートに入れる');
-        // await page.click('button:has-text("カートに追加")');
-
-        // await page.locator('.s-header-menu').click();
-        // await page.waitForSelector('gDrawerWrapper');
-        // await expect(page.locator("#gDrawerContent >> .c-list-body__heading >> text=ブランドから探す")).toBeVisible()
-        // await page.click('#gDrawerContent >> .c-list-body__heading >> text=ブランドから探す');
-        // await page.locator('#nameSearch').fill('nike')
-        // await page.locator('.c-list-body__caption >> text=ナイキ').nth(0).click();
-
-
-        // const cookieValues = await getCookieValues();
-        // console.log('getCookie', await getCookieValuesByStored(browserContext));
-        // await browserContext.clearCookies();
-        // await browserContext.addCookies(cookieValues)
-
-
-        /*const response = await page.evaluate(async () => {
-            await fetch("https://zozo.jp/sp/_cart/default.html", {
-                "headers": {
-                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*!/!*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                    "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-                    "cache-control": "max-age=0",
-                    "content-type": "application/x-www-form-urlencoded",
-                    "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
-                    "sec-ch-ua-mobile": "?1",
-                    "sec-ch-ua-platform": "\"Android\"",
-                    "sec-fetch-dest": "document",
-                    "sec-fetch-mode": "navigate",
-                    "sec-fetch-site": "same-origin",
-                    "sec-fetch-user": "?1",
-                    "upgrade-insecure-requests": "1"
-                },
-                "referrer": "https://zozo.jp/sp/_cart/default.html?c=Message&no=1&name=ModifyMessage&",
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": "c=put&ssid=71575440&rid=3204&scpid=&p_seckey=e0a13b08f6e5fc87ff1dec938fde08cb",
-                "method": "POST",
-                "mode": "cors",
-                "credentials": "include"
-            });
-        })*/
-
-
-        /*   const apiContext = await request.newContext({
-               // All requests we send go to this API endpoint.
-               baseURL: getZozotownUrl(),
-               extraHTTPHeaders: {
-                   "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*!/!*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-                   "accept-language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
-                   "cache-control": "no-cache",
-                   "content-type": "application/x-www-form-urlencoded",
-                   "pragma": "no-cache",
-                   "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
-                   "sec-ch-ua-mobile": "?1",
-                   "sec-ch-ua-platform": "\"Android\"",
-                   "sec-fetch-dest": "document",
-                   "sec-fetch-mode": "navigate",
-                   "sec-fetch-site": "same-origin",
-                   "sec-fetch-user": "?1",
-                   "upgrade-insecure-requests": "1",
-               },
-           });*/
-
-        /*const newIssue = await apiContext.post(`${getZozotownUrl()}_cart/default.html`, {
-            data: {
-                c:'put',
-                ssid:`${ssid}&rid=${rid}`,
-                scpid:'',
-                p_seckey:'653c65e408597dc5ebd40b55da630cf2'
-            }
-        });*/
-
-        // expect(response.ok()).toBeTruthy();
-
+        await page.waitForTimeout(6000);
+        await page.reload();
+        console.log('getCookieValuesByStored', await getCookieValuesByStored(browserContext));
         await page.pause();
-        // await browser.close();
     });
 });
 
