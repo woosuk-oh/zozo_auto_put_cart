@@ -138,7 +138,8 @@ test.describe('zozo town auto put cart', () => {
             await page.goto('https://zozo.jp/sp/shop/nike/goods/54382162/?did=90051147&rid=3004');*!/
         });*/
 
-        await page.goto('https://zozo.jp/sp/shop/nike/goods/59531385/?did=100310821&rid=3203');
+        // await page.goto('https://zozo.jp/sp/shop/nike/goods/59531385/?did=100310821&rid=3203');
+        await page.goto('https://zozo.jp/_cart/default.html?at=1');
 
 
         // await page.locator('text=スニーカー').nth(0).click();
@@ -161,8 +162,8 @@ test.describe('zozo town auto put cart', () => {
         // await page.locator('button:has-text("カートに追加")').nth(0).click();
 
         await page.waitForTimeout(6000);
-        await page.locator('.c-button.--appearance-primary.--width-fluid.--height-medium').nth(1).click();
-        await page.waitForTimeout(5000);
+        // await page.locator('.c-button.--appearance-primary.--width-fluid.--height-medium').nth(1).click();
+        // await page.waitForTimeout(5000);
         await page.evaluate(async ()=> {
             console.log('window?.__seckey', window?.__seckey)
             // let secKey = window?.__seckey;
