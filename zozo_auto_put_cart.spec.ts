@@ -23,18 +23,13 @@ test.describe('zozo town auto put cart', () => {
 
 
     test('move to zozo town mobile page', async (/*{page}*/) => {
-        const _fs = fs;
-        const _client = client;
-        const _axios = Axios;
-
-
         const browser = await firefox.launch({
+        // const browser = await chromium.launch({
             headless: false,
             // ...android
             // channel: 'chrome' // or 'msedge', 'chrome-beta', 'msedge-beta', 'msedge-dev', etc.
         });
 
-        // const browser = await chromium.launch();
      /*   const browserContext = await browser.newContext({
             ...android
             // ...iPhone
@@ -50,9 +45,13 @@ test.describe('zozo town auto put cart', () => {
             downloadPath: './',
         });*/
         await page.goto(getZozotownCartUrl());
+        await page.evaluate(()=> {
+            console.log('seckey: ',String(window?.__seckey));
+        })
         await page.waitForTimeout(10000);
         await page.evaluate(async ()=> {
             // console.log('window?.__seckey', window?.__seckey)
+
                 await fetch("https://zozo.jp/_cart/default.html", {
                     "headers": {
                         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -68,8 +67,8 @@ test.describe('zozo town auto put cart', () => {
                         "sec-fetch-user": "?1",
                         "upgrade-insecure-requests": "1"
                     },
-                    // "referrerPolicy": "strict-origin-when-cross-origin",
-                    "body": `c=put&sid=79575440&rid=&p_seckey=${String(window?.__seckey)}`,
+                    "referrer": "https://zozo.jp/_cart/default.html",                    // "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": `c=put&sid=90200354&rid=1204&p_seckey=${String(window?.__seckey)}`,
                     "method": "POST",
                     "mode": "cors",
                     "credentials": "include"
@@ -85,9 +84,9 @@ test.describe('zozo town auto put cart', () => {
 
         await browserContext.exposeFunction("downloadFile", (url, filepath) => {
             return new Promise((resolve, reject) => {
-                _client.get(url, (res) => {
+                client.get(url, (res) => {
                     if (res.statusCode === 200) {
-                        res.pipe(_fs.createWriteStream(filepath))
+                        res.pipe(fs.createWriteStream(filepath))
                             .on('error', reject)
                             .once('close', () => resolve(filepath));
                     } else {
@@ -99,8 +98,12 @@ test.describe('zozo town auto put cart', () => {
             })
         });
 
-        await page.evaluate(async ({cookies,_fs,_axios,_client}) => {
+        await browserContext.exposeFunction("readFileSync", (url, option) => {
+            return fs.readFileSync(url, option);
+        });
 
+        await page.evaluate(async (cookies) => {
+            window.URL = window.URL || window.webkitURL;
 
 
             /*function downloadFile(url, filepath) {
@@ -137,28 +140,25 @@ test.describe('zozo town auto put cart', () => {
 
             console.log('getCookieValuesByStored', cookies);
             const blob = new Blob([JSON.stringify(cookies)], {type: 'application/json'});
+            console.log('blob', blob);
             const url = window.URL.createObjectURL(blob);
 
 
             if(!!cookies){
                 console.log('url', url);
-                const link = window.document.createElement('button');
+                const link = window.document.createElement('a');
                 console.log('link', link);
                 link.id = 'cookies-download-tag'
                 link.textContent = 'download cookies file';
-                link.setAttribute('href', url);
-                link.setAttribute(
-                    'download',
-                    `test.json`
-                );
-
-                window['downloadFile'](url, 'test.json')
+                link.href = url;
+                link.download = 'cookies.json'
+                /*window['downloadFile'](url, 'test.json')
                     .then(v => console.log('v1', v))
                     .catch(e=>console.error('e1',e));
 
                 window['downloadFile'](url, 'test.json')
                     .then(v => console.log('v2', v))
-                    .catch(e=>console.error('e2',e));
+                    .catch(e=>console.error('e2',e));*/
 
                 // await downloadByAxios(url, 'test2.json');
 
@@ -166,18 +166,42 @@ test.describe('zozo town auto put cart', () => {
 
                 const header = window.document.getElementById('gblHeaderStuck');
                 header.appendChild(link);
-                // link.click();
+
+                setTimeout(()=> {
+                    link.click();
+                }, 1000)
+
             }
-        }, {cookies,_fs,_axios,_client});
-        // await page.waitForSelector("#cookies-download-tag");
-       /* const [download] = await Promise.all([
-            page.waitForEvent('download'),
-            page.locator('button#cookies-download-tag').click(),
-        ]);
-        const suggestedFileName = download.suggestedFilename();
-        const filePath = 'download/' + suggestedFileName;
-        await download.saveAs(filePath);
-        expect(fs.existsSync(filePath));*/
+        }, cookies);
+
+        page.on('download', download => download.path().then(console.log));
+
+
+
+        /*let link = await page.waitForSelector("#cookies-download-tag");
+        let file = await new Promise(((resolve, reject) => {{
+            page.once('download', async (download)=> {
+                let path = await download.path();
+                let data = fs.readFileSync(path, {encoding: 'utf-8'});
+                resolve(data);
+            });
+            link.click();
+        }
+        }));
+                console.log('file', file);
+
+        */
+
+
+
+        /* const [download] = await Promise.all([
+             page.waitForEvent('download'),
+             page.locator('button#cookies-download-tag').click(),
+         ]);
+         const suggestedFileName = download.suggestedFilename();
+         const filePath = 'download/' + suggestedFileName;
+         await download.saveAs(filePath);
+         expect(fs.existsSync(filePath));*/
 
 
 
