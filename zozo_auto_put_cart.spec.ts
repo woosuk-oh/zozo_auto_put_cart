@@ -1,4 +1,11 @@
 import {test, expect, webkit, firefox, devices, chromium, BrowserContext,} from '@playwright/test';
+const fs = require('fs');
+const client = require('https');
+const Axios = require('axios')
+
+// const https = require('https');
+
+
 export const ssid = 87249451;
 export const rid = 3203;
 
@@ -16,6 +23,11 @@ test.describe('zozo town auto put cart', () => {
 
 
     test('move to zozo town mobile page', async (/*{page}*/) => {
+        const _fs = fs;
+        const _client = client;
+        const _axios = Axios;
+
+
         const browser = await firefox.launch({
             headless: false,
             // ...android
@@ -28,10 +40,17 @@ test.describe('zozo town auto put cart', () => {
             // ...iPhone
         });*/
 
-        const browserContext = await browser.newContext();
+        const browserContext = await browser.newContext({            acceptDownloads: true,
+        });
         const page = await browserContext.newPage();
+        /*const client = await browserContext.newCDPSession(page);
+        await client.send('Page.setDownloadBehavior', {
+            behavior: 'allow',
+            // This path must match the WORKSPACE_DIR in Step 1
+            downloadPath: './',
+        });*/
         await page.goto(getZozotownCartUrl());
-        await page.waitForTimeout(6000);
+        await page.waitForTimeout(10000);
         await page.evaluate(async ()=> {
             // console.log('window?.__seckey', window?.__seckey)
                 await fetch("https://zozo.jp/_cart/default.html", {
@@ -49,9 +68,8 @@ test.describe('zozo town auto put cart', () => {
                         "sec-fetch-user": "?1",
                         "upgrade-insecure-requests": "1"
                     },
-                    "referrer": "https://zozo.jp/shop/nike/goods/54382162/?did=90051150&rid=1094",
-                    "referrerPolicy": "strict-origin-when-cross-origin",
-                    "body": `c=put&sid=71575437&rid=1094&p_seckey=${String(window?.__seckey)}`,
+                    // "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": `c=put&sid=79575440&rid=&p_seckey=${String(window?.__seckey)}`,
                     "method": "POST",
                     "mode": "cors",
                     "credentials": "include"
@@ -62,7 +80,119 @@ test.describe('zozo town auto put cart', () => {
         });
         await page.waitForTimeout(6000);
         await page.reload();
-        console.log('getCookieValuesByStored', await getCookieValuesByStored(browserContext));
+        const cookies = await getCookieValuesByStored(browserContext);
+
+
+        await browserContext.exposeFunction("downloadFile", (url, filepath) => {
+            return new Promise((resolve, reject) => {
+                _client.get(url, (res) => {
+                    if (res.statusCode === 200) {
+                        res.pipe(_fs.createWriteStream(filepath))
+                            .on('error', reject)
+                            .once('close', () => resolve(filepath));
+                    } else {
+                        // Consume response data to free up memory
+                        res.resume();
+                        reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+                    }
+                });
+            })
+        });
+
+        await page.evaluate(async ({cookies,_fs,_axios,_client}) => {
+
+
+
+            /*function downloadFile(url, filepath) {
+                return new Promise((resolve, reject) => {
+                    _client.get(url, (res) => {
+                        if (res.statusCode === 200) {
+                            res.pipe(_fs.createWriteStream(filepath))
+                                .on('error', reject)
+                                .once('close', () => resolve(filepath));
+                        } else {
+                            // Consume response data to free up memory
+                            res.resume();
+                            reject(new Error(`Request Failed With a Status Code: ${res.statusCode}`));
+                        }
+                    });
+                });
+            }*/
+
+            /*
+
+            async function downloadByAxios(url, filepath) {
+                const response = await Axios({
+                    url,
+                    method: 'GET',
+                    responseType: 'stream'
+                });
+                return new Promise((resolve, reject) => {
+                    response.data.pipe(fs.createWriteStream(filepath))
+                        .on('error', reject)
+                        .once('close', () => resolve(filepath));
+                });
+            }
+*/
+
+            console.log('getCookieValuesByStored', cookies);
+            const blob = new Blob([JSON.stringify(cookies)], {type: 'application/json'});
+            const url = window.URL.createObjectURL(blob);
+
+
+            if(!!cookies){
+                console.log('url', url);
+                const link = window.document.createElement('button');
+                console.log('link', link);
+                link.id = 'cookies-download-tag'
+                link.textContent = 'download cookies file';
+                link.setAttribute('href', url);
+                link.setAttribute(
+                    'download',
+                    `test.json`
+                );
+
+                window['downloadFile'](url, 'test.json')
+                    .then(v => console.log('v1', v))
+                    .catch(e=>console.error('e1',e));
+
+                window['downloadFile'](url, 'test.json')
+                    .then(v => console.log('v2', v))
+                    .catch(e=>console.error('e2',e));
+
+                // await downloadByAxios(url, 'test2.json');
+
+
+
+                const header = window.document.getElementById('gblHeaderStuck');
+                header.appendChild(link);
+                // link.click();
+            }
+        }, {cookies,_fs,_axios,_client});
+        // await page.waitForSelector("#cookies-download-tag");
+       /* const [download] = await Promise.all([
+            page.waitForEvent('download'),
+            page.locator('button#cookies-download-tag').click(),
+        ]);
+        const suggestedFileName = download.suggestedFilename();
+        const filePath = 'download/' + suggestedFileName;
+        await download.saveAs(filePath);
+        expect(fs.existsSync(filePath));*/
+
+
+
+
+        /*const reliablePath = 'test.json'
+        const file = fs.createWriteStream(reliablePath);
+        const href = await page.$eval('#cookies-download-tag', el => el.href);
+        https.get(href, function(response) {
+            response.pipe(file);
+        });*/
+
+        // console.log('path',await download.path());
+
+        await page.waitForTimeout(1000);
+
         await page.pause();
     });
 });
@@ -87,6 +217,7 @@ export async function getCookieValues() {
         }
     ]
 }
+
 export async function getCookieValuesByStored(context: BrowserContext) {
     return context.cookies([getZozotownHostUrl()])
 }
